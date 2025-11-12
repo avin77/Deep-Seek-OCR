@@ -24,8 +24,8 @@ All processing happens on your machine; documents never leave your GPU box.
 | Streamlit UI   | -> | FastAPI in Docker (uvicorn) | -> | DeepSeek-OCR model dir  |
 +----------------+    | GPU bindings + HF cache     |    | mounted from host       |
                       +-----------------------------+    +-------------------------+
-                                   ^
-               localhost:7861 (/ocr)+
+                                  ^
+              http://localhost:7861/ocr (FastAPI)
 ```
 - **Volumes**: `C:\models\DeepSeek-OCR` (weights), `C:\models\ocr-app` (FastAPI code), `C:\models\hf-cache` (HF cache).
 - **Image**: `pytorch/pytorch:2.5.1-cuda12.1-cudnn9-runtime` with `accelerate`, `transformers`, etc.
@@ -52,7 +52,7 @@ Use `scripts/run_local.sh {vllm|api|ui|all}` to launch each component with overi
      bash -lc "pip install -q --no-cache-dir 'accelerate>=0.26.0' 'transformers==4.47.1' 'tokenizers==0.21.0' addict matplotlib einops easydict timm fastapi uvicorn pillow python-multipart && uvicorn app:app --host 0.0.0.0 --port 7860 --app-dir /opt/app"
    ```
 4. Watch `docker logs -f deepseek-ocr` for **Application startup complete**.
-5. Smoke test: `curl -X POST -F "file=@C:\path\to\sample.png" http://localhost:7861/ocr`.
+5. Smoke test: `curl -X POST -F "file=@C:\path\to\sample.png" http://localhost:7861/ocr` (API docs at `http://localhost:7861/docs`).
 
 ## Setup - three-server stack (optional)
 
@@ -77,8 +77,8 @@ python -m venv .venv
 pip install -r requirements.txt
 streamlit run ui\app.py
 ```
-- Visit `http://localhost:8501`.
-- Leave the sidebar base URL as `http://localhost:7861` (unless you changed ports).
+- Visit `http://localhost:8501/` (Streamlit home).
+- Leave the sidebar base URL as `http://localhost:7861/ocr` if you want to call the endpoint directly, or `http://localhost:7861` to use the default `/ocr` path. FastAPI docs remain at `http://localhost:7861/docs`.
 - Upload a PDF/Image -> click **Extract text with DeepSeek-OCR** -> review the text + raw JSON.
 
 ## Repository layout
