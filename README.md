@@ -91,12 +91,41 @@ streamlit run ui\app.py
 | `app/`, `faiss_service/`, `utils/`, `tests/` | Scaffolding for future structured OCR + FAISS workflows. |
 | `requirements.txt` | Streamlit + helper dependencies. |
 
-## Future roadmap
-
+-## Future roadmap
+-
 - **Multi-page PDF support** - send every page (batching) instead of just page 1.
 - **Structured JSON extraction** - revive the FAISS/indexing pipeline for line items and semantic search.
 - **Inline editing + export** - allow fixing OCR output in the UI and exporting to CSV/JSON.
 - **Authentication & API keys** - optional auth between UI and API for multi-user setups.
 - **Automated tests** - flesh out the placeholders under `tests/` once the extended pipeline ships.
+- **Human-in-the-loop review** - capture reviewer edits/approvals in the UI so model outputs can be corrected, audited, and used for continual fine-tuning.
+- **RAG enrichment** - attach a retrieval layer (FAISS plus invoice history) so outputs reference prior documents or vendor-specific context.
+- **Observability dashboard** - add Grafana/Streamlit dashboards for throughput, latency, GPU utilization, and error rates.
+- **Feedback dataset builder** - persist human edits alongside raw model output to seed future supervised fine-tunes.
+
+## Core metrics to track
+
+- **Latency**: end-to-end time from upload to OCR text (p50/p90) plus GPU utilization for capacity planning.
+- **Accuracy**: field-level correctness (invoice numbers, totals, line items) using sampled human labels.
+- **Adoption**: number of documents processed per day and the percentage handled without manual edits.
+- **Cost**: GPU hours vs. throughput, amortized per invoice.
+- **Quality debt**: backlog of human overrides awaiting model retraining (drives human-in-the-loop staffing).
+
+These metrics will feed the planned dashboard to keep the solution grounded in measurable value and highlight when workflow or model updates are needed.
+- **Human-in-the-loop review** - capture reviewer edits/approvals in the UI so model outputs can be corrected, audited, and used for continual fine-tuning.
+- **RAG enrichment** - attach a retrieval layer (FAISS + invoice history) so summaries can reference prior documents or vendor-specific context.
+- **Observability dashboard** - Grafana/Streamlit dashboard to surface throughput, latency, GPU utilization, and error rates across the stack.
+- **Business metrics** - compute per-invoice accuracy (field-level DIFOT), reviewer time saved, and confidence scores to judge solution feasibility.
+- **Feedback dataset builder** - persist human edits plus raw model output to a training set for future supervised fine-tuning.
+
+-## Core metrics to track
+-
+- **Latency**: end-to-end time from upload to OCR text (p50/p90) plus GPU utilization for capacity planning.
+- **Accuracy**: field-level correctness (invoice number, totals, line items) using sampled human labels.
+- **Adoption**: number of documents processed per day, % handled without manual edits.
+- **Cost**: GPU hours vs. throughput, amortized per invoice.
+- **Quality debt**: backlog of human overrides awaiting model retraining (helps plan HITT efforts).
+
+-These metrics will feed the planned dashboard to keep the solution grounded in measurable value and highlight when model updates or workflow tweaks are needed.
 
 Contributions welcome-open an issue or PR with proposed improvements.
